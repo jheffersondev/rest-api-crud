@@ -1,9 +1,9 @@
 const { Sequelize } = require("sequelize")
 
-const sequelize = new Sequelize("crud_rest_api", "dev", "010010101", {
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
     logging: false,
     dialect: "mysql",
-    host: "localhost"
+    host: process.env.DB_HOST
 })
 
 sequelize.authenticate()

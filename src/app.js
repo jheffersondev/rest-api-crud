@@ -1,12 +1,10 @@
-const dotenv = require("dotenv")
+require("dotenv/config")
 const express = require("express")
 const cors = require("cors")
 const UserRouter = require("./routes/UserRouter")
 const CatchErrorHandler = require("./middlewares/CatchErrorHandler")
 
-dotenv.config()
 const app = express()
-
 app.use(express.json())
 app.use(cors())
 app.use(UserRouter)

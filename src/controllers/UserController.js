@@ -1,4 +1,3 @@
-const { findByPk } = require("../models/User");
 const User = require("../models/User");
 
 module.exports = {
@@ -7,30 +6,89 @@ module.exports = {
 
         if(name && phone && email && password){
             try{
-                const [user, created] = await User.findOrCreate({ where: {email}, defaults: {name, phone, email, password}})
+                const [user, created] = await User.findOrCreate({ where: {email}, defaults: {name, phone, email, password}});
                 if(created){
-                    return res.json({success: true, message:"User created"});
+                    return res.status(200).json({message:"User created"});
                 } else{
-                    return res.json({success: false, message:"Email already exists"});
+                    return res.status(406).json({error:"Email already exists"});
                 }
             } catch(err) {
-                console.log(err.errors)          
-                return res.status(500).json({success: false, message: "Could not create user"});  
+                console.log(err.errors);          
+                return res.status(500).json({error: "Could not create user"});  
             }
 
         } else{
-            return res.status(400).json({success: false, message:"invalid params"});
+            return res.status(400).json({error:"invalid params"});
         }
         
     },
-    fetchOne: (req, res) => {
+    fetchOne: async (req, res) => {
+        var id = req.params.id;
 
-    },
-    fetchAll: (req, res) => {
-        
-    },
-    update: (req, res) => {
+        if(id && isNaN(id) == false) {
+            try{
+                var user = await User.findByPk(id);
+                if(user == null) {
+                    return res.status(404).json({error:"Could not find user"})
+                }
+                return res.status(200).json({user});
 
+            } catch(err){
+                console.log(err);          
+                return res.status(500).json({error: "Could not fetch user"});
+            }
+
+        } else{
+            return res.status(400).json({error:"invalid params"});
+        }
+    },
+    fetchAll: async (req, res) => {
+        try{
+            var users = await User.findAll();
+            return res.status(200).json({users});
+
+        } catch(err){
+            console.log(err);          
+            return res.status(500).json({error: "Could not fetch users"});
+        }
+    },
+    update: async (req, res) => {
+        var id = req.params.id;
+        var { name, phone, email, password } = req.body; 
+
+        if(id && isNaN(id) == false) {
+            if(name && phone && email && password){
+                try{
+                    var user = await User.findByPk(id);
+                    if(user == null) {
+                        return res.status(404).json({error:"Could not find user"})
+                    }
+                    
+                    var searchEmail = await User.findOne({where: {email}});
+                    if(searchEmail !== null){
+                        if(searchEmail.id != id){
+                            return res.status(406).json({error:"Email already exists"});
+                        }
+                    }
+
+                    const update = await User.update({name, phone, email, password}, {where: {id}});
+                    if(update.length > 0 && update[0] == 1){
+                        return res.status(200).json({message: "User details updated"});
+                    } else{
+                        return res.status(500).json({error: "Could not update user"});
+                    }
+                } catch(err) {
+                    console.log(err.errors);          
+                    return res.status(500).json({error: "Could not update user"});  
+                }
+    
+            } else{
+                return res.status(400).json({error:"invalid params"});
+            }
+
+        } else{
+            return res.status(400).json({error:"invalid params"});
+        }
     },
     delete: async (req, res) => {
         var id = req.params.id;
@@ -39,18 +97,18 @@ module.exports = {
             try{
                 var userExists = await User.findByPk(id)
                 if(userExists === null){
-                    return res.status(404).json({success: false, message: "Could find user"});
+                    return res.status(404).json({error: "Could not find user"});
                 }
                     
-                var deleteUser = await User.destroy({ where: {id}})
-                return res.status(200).json({success: true, message: "User deleted"});
+                await User.destroy({ where: {id}});
+                return res.status(200).json({message: "User deleted"});
 
             } catch(err){
-                console.log(err)          
-                return res.status(500).json({success: false, message: "Could not delete user"});
+                console.log(err);          
+                return res.status(500).json({error: "Could not delete user"});
             }
         } else{
-            return res.status(400).json({success: false, message:"invalid params"});
+            return res.status(400).json({error:"invalid params"});
         }
     }
 }
