@@ -8,8 +8,6 @@ The following packages dependencies is need to run the server:
  - [mysql2](https://yarnpkg.com/package/mysql2)
  - [Cors](https://yarnpkg.com/package/cors)
  - [Dotenv](https://yarnpkg.com/package/dotenv)
-<br/>
-<br/>
 
 # Database models structure
  We're using MySQL Database to keep it most simple as possible
@@ -24,12 +22,7 @@ The following packages dependencies is need to run the server:
   - createdAt
   - updatedAt
 
-<br>
-<br>
-
 # How to start
-
-
 ## 1. Define your database access
  Before start server you need to set up your local database access, to do it you need to change the `.env` file located at root of the project.
 
