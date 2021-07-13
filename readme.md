@@ -1,5 +1,5 @@
-# USER REST API - CRUD
-A simple REST API to user management based on CRUD operations.<br>
+# EXPRESS CRUD API
+A simple API to user management based on CRUD operations.<br>
 With this API you can create, read, update and delete users from a MySQL database.
 
 The following packages dependencies is need to run the server: 
