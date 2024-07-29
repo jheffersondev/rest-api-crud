@@ -1,4 +1,4 @@
-const { Sequelize } = require("sequelize")
+import { Sequelize } from "sequelize"
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASS, {
     logging: false,
@@ -15,4 +15,4 @@ sequelize.authenticate()
         console.log("Reason: " + err.original.sqlMessage)
     })
 
-module.exports = sequelize
+export default sequelize;
